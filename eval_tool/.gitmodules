@@ -1,0 +1,30 @@
+[submodule "third_party/SuperGluePretrainedNetwork"]
+	path = third_party/superglue
+	url = https://github.com/magicleap/SuperGluePretrainedNetwork
+[submodule "third_party/caps"]
+	path = third_party/caps
+	url = https://github.com/GrumpyZhou/caps
+[submodule "third_party/d2-net"]
+	path = third_party/d2net
+	url = https://github.com/mihaidusmanu/d2-net
+[submodule "third_party/r2d2"]
+	path = third_party/r2d2
+	url = https://github.com/naver/r2d2
+	ignore = untracked
+[submodule "third_party/sparse-ncnet"]
+	path = third_party/sparsencnet
+	url = https://github.com/ignacio-rocco/sparse-ncnet
+[submodule "third_party/hloc"]
+	path = third_party/hloc
+	url = https://github.com/GrumpyZhou/Hierarchical-Localization
+	branch = extend_base_dev
+[submodule "third_party/patch2pix"]
+	path = third_party/patch2pix
+	url = https://github.com/GrumpyZhou/patch2pix
+[submodule "third_party/loftr"]
+	path = third_party/loftr
+	url = https://github.com/zju3dv/LoFTR
+[submodule "third_party/cotr"]
+	path = third_party/cotr
+	url = https://github.com/ubc-vision/COTR
+	branch = master
