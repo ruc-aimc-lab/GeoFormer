@@ -12,7 +12,7 @@ import eval_tool.immatch.utils.my_helper as helper
 from eval_tool.immatch.utils.model_helper import parse_model_config
 
 
-def eval_my(
+def eval_ische(
         root_dir,
         config_list,
         task='homography',
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
-    eval_my(
+    eval_ische(
         args.root_dir, args.config,
         h_solver=args.h_solver,
         ransac_thres=args.ransac_thres,

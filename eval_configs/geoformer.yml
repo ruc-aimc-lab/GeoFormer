@@ -34,7 +34,6 @@ aachen:
     sc_thres: 0.1 # Filtering during quantization
     covis_cluster: False
 
-
 inloc:
     <<: *default
     match_threshold: 0.4
