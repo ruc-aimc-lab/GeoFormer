@@ -101,7 +101,7 @@ python -m lightning/train_homo_geoformer
 #### Homography Estimation Performance
 
 Our evaluation code is implemented based on the foundation of this benchmark.
-+ [immath](https://github.com/GrumpyZhou/image-matching-toolbox/tree/main/immatch)
++ [immatch](https://github.com/GrumpyZhou/image-matching-toolbox/tree/main/immatch)
 
 The [eval_Hpatches.py](eval_Hpatches.py) code shows how homography estimation is performed on the Hpatches dataset.
 ```
