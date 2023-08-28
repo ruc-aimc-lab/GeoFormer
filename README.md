@@ -75,7 +75,7 @@ data/
 ### Models
 
 You may skip the training stage and use our provided models for homography estimation.
-+ [Google drive](wait)
++ [Google drive](https://drive.google.com/file/d/1y4rBcpRSc6y7J34YAQv32CQgkR2_wCkZ/view?usp=drive_link)
 
 Put the trained model into `saved_ckpt/` folder.
 
