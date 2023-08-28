@@ -1,97 +1,102 @@
-
+from argparse import Namespace
 import torch
-import cv2
 import numpy as np
-from torchvision import transforms
+import cv2
 
-# loftr_config = {
-#     "nms_size": 10,
-#     "nms_thresh": 0.1,
-#     "cont_thresh": 0.8,
-#     "geo_thresh": 0.5,
-#     "image_shape": (640, 480),
-#     'layer_names': ['self', 'cross']*4,
-#     "d_model": 256,
-#     'initial_dim': 128,
-#     'block_dims': [128, 256, 256],
-#     'nhead': 4,
-#     'max_num': 1024,
-#     'sinkhorn_iterations': 5,
-#     'is_train': True
-# }
-my_transforms = transforms.Compose([
-            transforms.ToPILImage(),
-            transforms.ToTensor(),
-            # transforms.Normalize(0.5, 0.5)
-        ])
-# model = SDMatchNet(loftr_config)
-# state_dict = torch.load('save/saved_model.pth', map_location=torch.device('cpu'))
-# model.load_state_dict(state_dict)
-# h, w = loftr_config['image_shape']
-# a = cv2.imread('samples/1.jpg')
-# b = cv2.imread('samples/2.jpg')
-# a = cv2.resize(a, (w, h))
-# b = cv2.resize(b, (w, h))
+from model.loftr_src.loftr.utils.cvpr_ds_config import default_cfg
+from model.full_model import GeoFormer as GeoFormer_
 
-def inference(model, query, refer, seg=None, device='cpu', deal_data=True):
-    if deal_data:
-        query = my_transforms(query).unsqueeze(0).to(device)
-        refer = my_transforms(refer).unsqueeze(0).to(device)
+from eval_tool.immatch.utils.data_io import load_gray_scale_tensor_cv
+from model.geo_config import default_cfg as geoformer_cfg
 
-    # model.eval()
-    if seg is not None:
-        kp0, kp1, raw_kp0, raw_kp1, fine_kp0, fine_kp1 = model(query, refer, seg)
-    else:
-        kp0, kp1, raw_kp0, raw_kp1, fine_kp0, fine_kp1 = model(query, refer)
+class GeoFormer():
+    def __init__(self, imsize, match_threshold, no_match_upscale=False, ckpt=None, device='cuda'):
 
-    # try:
-    #     # kp0, kp1 = coarse_results[0]['coarse_kps0'].cpu(), coarse_results[0]['coarse_kps1'].cpu()
-    #     # raw_kp0, raw_kp1 = coarse_results[0]['raw_kps0'].cpu(), coarse_results[0]['raw_kps1'].cpu()
-    #     # fine_kp0, fine_kp1 = fine_results[0]['fine_kps0'].cpu(), fine_results[0]['fine_kps1'].cpu()
-    #     kp0, kp1 = coarse_results[0]['coarse_kps0'].cpu(), coarse_results[0]['coarse_kps1'].cpu()
-    #     raw_kp0, raw_kp1 = coarse_results[0]['raw_kps0'].cpu(), coarse_results[0]['raw_kps1'].cpu()
-    #     fine_kp0, fine_kp1 = fine_results[0]['fine_kps0'].cpu(), fine_results[0]['fine_kps1'].cpu()
-    # except Exception:
-    #     kp0 = kp1 = []
-    #     raw_kp0, raw_kp1 = [], []
-    #     fine_kp0 = fine_kp1 = []
+        self.device = device
+        self.imsize = imsize
+        self.match_threshold = match_threshold
+        self.no_match_upscale = no_match_upscale
 
+        # Load model
+        conf = dict(default_cfg)
+        conf['match_coarse']['thr'] = self.match_threshold
+        geoformer_cfg['coarse_thr'] = self.match_threshold
+        self.model = GeoFormer_(conf)
+        ckpt_dict = torch.load(ckpt, map_location=torch.device('cpu'))
+        if 'state_dict' in ckpt_dict:
+            ckpt_dict = ckpt_dict['state_dict']
+        self.model.load_state_dict(ckpt_dict, strict=False)
+        self.model = self.model.eval().to(self.device)
 
-    # kp0 = [cv2.KeyPoint(int(k[0]), int(k[1]), 30) for k in kp0]
-    # kp1 = [cv2.KeyPoint(int(k[0]), int(k[1]), 30) for k in kp1]
-    # matches = [cv2.DMatch(_trainIdx=i, _queryIdx=i, _distance=1, _imgIdx=-1) for i in range(len(kp0))]
+        # Name the method
+        self.ckpt_name = ckpt.split('/')[-1].split('.')[0]
+        self.name = f'GeoFormer_{self.ckpt_name}'
+        if self.no_match_upscale:
+            self.name += '_noms'
+        print(f'Initialize {self.name}')
 
-    fine_kp0 = [cv2.KeyPoint(int(k[0]), int(k[1]), 30) for k in fine_kp0]
-    fine_kp1 = [cv2.KeyPoint(int(k[0]), int(k[1]), 30) for k in fine_kp1]
-    fine_matches = [cv2.DMatch(_trainIdx=i, _queryIdx=i, _distance=1, _imgIdx=-1) for i in range(len(fine_kp0))]
+    def change_deivce(self, device):
+        self.device = device
+        self.model.to(device)
+    def load_im(self, im_path, enhanced=False):
+        return load_gray_scale_tensor_cv(
+            im_path, self.device, imsize=self.imsize, dfactor=8, enhanced=enhanced, value_to_scale=min
+        )
 
-    kp0 = [cv2.KeyPoint(int(k[0]), int(k[1]), 30) for k in kp0]
-    kp1 = [cv2.KeyPoint(int(k[0]), int(k[1]), 30) for k in kp1]
+    def match_inputs_(self, gray1, gray2, is_draw=False):
 
-    raw_kp0 = [cv2.KeyPoint(int(k[0]), int(k[1]), 30) for k in raw_kp0]
-    raw_kp1 = [cv2.KeyPoint(int(k[0]), int(k[1]), 30) for k in raw_kp1]
+        batch = {'image0': gray1, 'image1': gray2}
+        with torch.no_grad():
+            batch = self.model(batch)
+        kpts1 = batch['mkpts0_f'].cpu().numpy()
+        kpts2 = batch['mkpts1_f'].cpu().numpy()
+        def draw():
+            import matplotlib.pyplot as plt
+            import cv2
+            import numpy as np
+            plt.figure(dpi=200)
+            kp0 = kpts1
+            kp1 = kpts2
+            # if len(kp0) > 0:
+            kp0 = [cv2.KeyPoint(int(k[0]), int(k[1]), 30) for k in kp0]
+            kp1 = [cv2.KeyPoint(int(k[0]), int(k[1]), 30) for k in kp1]
+            matches = [cv2.DMatch(_trainIdx=i, _queryIdx=i, _distance=1, _imgIdx=-1) for i in
+                       range(len(kp0))]
 
-    return fine_kp0, fine_kp1, fine_matches, raw_kp0, raw_kp1, kp0, kp1
-    #
-    src_pts = np.float32([kp0[m.queryIdx].pt for m in fine_matches]).reshape(-1, 1, 2)
-    dst_pts = np.float32([kp1[m.trainIdx].pt for m in fine_matches]).reshape(-1, 1, 2)
-    if len(src_pts) > 4:
-        M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
-        ransac_matches = np.array(fine_matches)[mask.ravel()==1]
-
-    if vis:
-        show = cv2.drawMatches((query[0][0].numpy() * 255).astype(np.uint8), kp0,
-                               (refer[0][0].numpy() * 255).astype(np.uint8), kp1, matches, None)
-        plt.imshow(show)
-        plt.show()
-
-        show = cv2.drawMatches((query[0][0].numpy() * 255).astype(np.uint8), fine_kp0,
-                               (refer[0][0].numpy() * 255).astype(np.uint8), fine_kp1, fine_matches, None)
-        plt.imshow(show)
-        plt.show()
-
-        if len(src_pts) > 4:
-            show = cv2.drawMatches((query[0][0].numpy() * 255).astype(np.uint8), fine_kp0,
-                                   (refer[0][0].numpy() * 255).astype(np.uint8), fine_kp1, ransac_matches, None)
+            show = cv2.drawMatches((gray1.cpu()[0][0].numpy() * 255).astype(np.uint8), kp0,
+                                   (gray2.cpu()[0][0].numpy() * 255).astype(np.uint8), kp1, matches,
+                                   None)
             plt.imshow(show)
             plt.show()
+        if is_draw:
+            draw()
+        scores = batch['mconf'].cpu().numpy()
+        matches = np.concatenate([kpts1, kpts2], axis=1)
+        return matches, kpts1, kpts2, scores
+
+    def match_pairs(self, im1_path, im2_path, cpu=False, is_draw=False):
+        torch.cuda.empty_cache()
+        tmp_device = self.device
+        if cpu:
+            self.change_deivce('cpu')
+        gray1, sc1 = self.load_im(im1_path)
+        gray2, sc2 = self.load_im(im2_path)
+
+        upscale = np.array([sc1 + sc2])
+        matches, kpts1, kpts2, scores = self.match_inputs_(gray1, gray2, is_draw)
+
+        if self.no_match_upscale:
+            return matches, kpts1, kpts2, scores, upscale.squeeze(0)
+
+        # Upscale matches &  kpts
+        matches = upscale * matches
+        kpts1 = sc1 * kpts1
+        kpts2 = sc2 * kpts2
+
+        if cpu:
+            self.change_deivce(tmp_device)
+
+        return matches, kpts1, kpts2, scores
+
+g = GeoFormer(640, 0.2, no_match_upscale=False, ckpt='saved_ckpt/geoformer.ckpt', device='cuda')
+g.match_pairs('/data3/ljz/matching/data/datasets/copy/query/106_2.jpg', '/data3/ljz/matching/data/datasets/copy/refer/106_1.jpg', is_draw=True)

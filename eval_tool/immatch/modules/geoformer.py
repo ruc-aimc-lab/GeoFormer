@@ -7,7 +7,7 @@ from model.loftr_src.loftr.utils.cvpr_ds_config import default_cfg
 from model.full_model import GeoFormer as GeoFormer_
 from .base import Matching
 from eval_tool.immatch.utils.data_io import load_gray_scale_tensor_cv
-from model.geoformer_config import default_cfg as geoformer_cfg
+from model.geo_config import default_cfg as geoformer_cfg
 
 class GeoFormer(Matching):
     def __init__(self, args, gpuid=0):

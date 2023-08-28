@@ -86,11 +86,7 @@ def main():
     default_config.TRAINER.WARMUP_STEP = math.floor(default_config.TRAINER.WARMUP_STEP / _scaling)
     # lightning module
     profiler = build_profiler(args.profiler_name)
-    # pretrained_ckpt = '/data3/ljz/matching/tmp_save/tmp2500.ckpt','/data3/ljz/matching/pretrained/loftr/outdoor_ds.ckpt'
-
-    # model = PL_GeoFormer(default_config, pretrained_ckpt='/data3/ljz/matching/pretrained/loftr/outdoor_ds.ckpt', profiler=profiler)
-    model = PL_GeoFormer(default_config,pretrained_ckpt='/data3/ljz/matching/tmp_save/best_h.ckpt',
-                         profiler=profiler)
+    model = PL_GeoFormer(default_config, profiler=profiler)
 
 
     loguru_logger.info(f"LightningModule initialized!")

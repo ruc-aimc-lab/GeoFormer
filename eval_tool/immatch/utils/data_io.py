@@ -21,8 +21,7 @@ def resize_im(wo, ho, imsize=None, dfactor=1, value_to_scale=max, aspan=False):
 
     # Make sure new sizes are divisible by the given factor
     wt, ht = map(lambda x: int(x // dfactor * dfactor), [wt, ht])
-    # wt = 480
-    # ht = 640
+
     scale = (wo / wt, ho / ht)
     return wt, ht, scale
 

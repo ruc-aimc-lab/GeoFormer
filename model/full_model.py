@@ -12,7 +12,7 @@ from model.loftr_src.loftr.loftr_module import LocalFeatureTransformer, FinePrep
 from model.loftr_src.loftr.utils.coarse_matching import CoarseMatching
 
 from model.geo_module import GeoModule
-from .geoformer_config import default_cfg
+from .geo_config import default_cfg
 
 
 class GeoFormer(nn.Module):

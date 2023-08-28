@@ -1,7 +1,5 @@
 import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '3'
-
 import argparse
 from argparse import Namespace
 import os
@@ -30,7 +28,7 @@ def eval_ische(
     result_dir = os.path.join(root_dir, odir, 'results', task)
     if task == 'homography':
         mauc = 0
-        data_root = os.path.join(root_dir, 'data/datasets/copy')
+        data_root = os.path.join(root_dir, 'data/datasets/ISC-HE')
         im1_path = os.path.join(data_root, 'query')
         im2_path = os.path.join(data_root, 'refer')
         gd_path = os.path.join(data_root, 'gd')
@@ -43,7 +41,7 @@ def eval_ische(
             raw_data.append((i1, i2, txt))
         match_pairs = raw_data
     else:
-        data_root = os.path.join(root_dir, 'data/datasets/copy')
+        data_root = os.path.join(root_dir, 'data/datasets/ISC-HE')
         with open(os.path.join(data_root, 'index.txt'), 'r') as f:
             match_pairs = f.readlines()
             match_pairs = [m.replace('\n', '').split(',') for m in match_pairs]
@@ -55,7 +53,7 @@ def eval_ische(
         # Iterate over methods
     for config_name in config_list:
         # Load model
-        args = parse_model_config(config_name, 'my', root_dir)
+        args = parse_model_config(config_name, 'isc-he', root_dir)
         class_name = args['class']
 
         # One log file per method
@@ -106,14 +104,14 @@ def eval_ische(
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Benchmark HPatches')
-    parser.add_argument('--gpu', '-gpu', type=str, default='4')
+    parser.add_argument('--gpu', '-gpu', type=str, default='0')
     parser.add_argument('--root_dir', type=str, default='.')
-    parser.add_argument('--odir', type=str, default='outputs/my')
-    parser.add_argument('--config', type=str, nargs='*', default=['dkm'])
+    parser.add_argument('--odir', type=str, default='outputs/isc-he')
+    parser.add_argument('--config', type=str, nargs='*', default=['geoformer'])
     parser.add_argument('--match_thres', type=float, nargs='*', default=None)
     parser.add_argument(
         '--task', type=str, default='homography',
-        choices=['matching', 'homography', 'both']
+        choices=['homography']
     )
     parser.add_argument(
         '--h_solver', type=str, default='cv',

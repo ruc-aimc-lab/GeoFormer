@@ -3,7 +3,7 @@ default: &default
     match_threshold: 0.2
     imsize: -1
     no_match_upscale: False
-    ckpt: '/data3/ljz/matching/tmp_save/best_megadepth.ckpt'
+    ckpt: 'saved_ckpt/geoformer.ckpt'
 hpatch:
     <<: *default
     imsize: 480
@@ -15,7 +15,7 @@ fire:
     imsize: 768
     ransac_thres: 15
     no_match_upscale: True
-my:
+isc-he:
     <<: *default
     imsize: 480
     match_threshold: 0.2
@@ -24,7 +24,6 @@ aachen:
     <<: *default
     match_threshold: 0.1 # Save all matches
     pairs: ['pairs-db-night_benchmark.txt', 'pairs-query-night_benchmark.txt']
-    ckpt: '/data3/ljz/matching/tmp_save/best_megadepth.ckpt'
     npts: 4096
     imsize: 1024
     qt_dthres: 4
@@ -33,7 +32,6 @@ aachen:
     ransac_thres: [20]
     sc_thres: 0.1 # Filtering during quantization
     covis_cluster: False
-
 inloc:
     <<: *default
     match_threshold: 0.4

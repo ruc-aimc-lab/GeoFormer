@@ -2,7 +2,6 @@ import argparse
 from argparse import Namespace
 import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '7'
 
 import eval_tool.immatch as immatch
 from eval_tool.immatch.utils.data_io import lprint
@@ -91,7 +90,7 @@ def eval_fire(
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Benchmark HPatches')
-    parser.add_argument('--gpu', '-gpu', type=str, default='7')
+    parser.add_argument('--gpu', '-gpu', type=str, default='0')
     parser.add_argument('--root_dir', type=str, default='.')
     parser.add_argument('--odir', type=str, default='outputs/fire')
     parser.add_argument('--config', type=str, nargs='*', default=['geoformer'])
