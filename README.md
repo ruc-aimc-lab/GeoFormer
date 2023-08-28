@@ -1,6 +1,6 @@
 # GeoFormer for Homography Estimation
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/semi-supervised-keypoint-detector-and/image-registration-on-fire)](https://paperswithcode.com/sota/image-registration-on-fire?p=semi-supervised-keypoint-detector-and)
+[//]: # ([![PWC]&#40;https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/semi-supervised-keypoint-detector-and/image-registration-on-fire&#41;]&#40;https://paperswithcode.com/sota/image-registration-on-fire?p=semi-supervised-keypoint-detector-and&#41;)
 
 This is the official source code of our ICCV2023 paper: [Geometrized Transformer for Self-Supervised Homography Estimation](https://arxiv.org/abs/...).
 
