@@ -87,7 +87,7 @@ The model config can be found in [model/geo_config.py](model/geo_config.py)
 
 Before training GeoFormer,
 the parameters of the dataset can be modified in these two files. [train_config/homo_trainval_640.py](train_config/homo_trainval_640.py) file or [train_config/megadepth_trainval_640.py](train_config/megadepth_trainval_640.py) file 
-And the training hyperparameters are adjusted here [train_config/loftr_ds_dense.py].
+And the training hyperparameters are adjusted here [train_config/loftr_ds_dense.py](train_config/loftr_ds_dense.py).
 
 
 ```
