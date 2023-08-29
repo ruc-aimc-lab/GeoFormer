@@ -18,8 +18,8 @@ from pytorch_lightning.plugins import DDPPlugin
 
 from model.loftr_src.lightning.data import MultiSceneDataModule
 # from data_depth import MultiSceneDataModule
-from model.utils.misc import get_rank_zero_only_logger, setup_gpus
-from model.utils.profiler import build_profiler
+from model.loftr_src.utils.misc import get_rank_zero_only_logger, setup_gpus
+from model.loftr_src.utils.profiler import build_profiler
 
 loguru_logger = get_rank_zero_only_logger(loguru_logger)
 
