@@ -1,3 +1,5 @@
+import os
+os.system('echo `pwd`')
 
 try:
     from .modules.geoformer import GeoFormer
