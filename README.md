@@ -2,7 +2,7 @@
 
 [//]: # ([![PWC]&#40;https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/semi-supervised-keypoint-detector-and/image-registration-on-fire&#41;]&#40;https://paperswithcode.com/sota/image-registration-on-fire?p=semi-supervised-keypoint-detector-and&#41;)
 
-This is the official source code of our ICCV2023 paper: [Geometrized Transformer for Self-Supervised Homography Estimation](https://arxiv.org/abs/...).
+This is the official source code of our ICCV2023 paper: [Geometrized Transformer for Self-Supervised Homography Estimation](https://openaccess.thecvf.com/content/ICCV2023/html/Liu_Geometrized_Transformer_for_Self-Supervised_Homography_Estimation_ICCV_2023_paper.html).
 
 ![illustration](./image/fig-model.jpg)
 
@@ -24,7 +24,7 @@ pip install -r requirements.txt
 GeoFormer can be trained on the artificially synthesized dataset OxFord-Paris, as well as on Megadepth dataset with depth labels included. 
 You need to organize the data according to the specified format.
 + OxFord-Paris, you can directly download the [link]() and extract it to the 'data/' directory;
-+ Megadepth, you need to follow the process outlined in the [LoFTR]() project  to organize it from scratch.
++ Megadepth, you need to follow the process outlined in the [LoFTR](https://github.com/zju3dv/LoFTR/blob/master/docs/TRAINING.md) project  to organize it from scratch.
 The training data should be organized as follows.
 ```
 data/
@@ -46,7 +46,7 @@ data/
 #### For Testing
 
 + FIRE: [https://projects.ics.forth.gr/cvrl/fire/](https://projects.ics.forth.gr/cvrl/fire/)
-+ ISC-HE: [wait for upload]()
++ ISC-HE: [https://drive.google.com/drive/folders/1giglxwMGlOb3qE-5AQ60R4495KxRGTqb](https://drive.google.com/drive/folders/1giglxwMGlOb3qE-5AQ60R4495KxRGTqb)
 + Hpatches: [http://icvl.ee.ic.ac.uk/vbalnt/hpatches/](http://icvl.ee.ic.ac.uk/vbalnt/hpatches/)
 
 The file organizations are as follows:
@@ -75,9 +75,9 @@ data/
 ### Models
 
 You may skip the training stage and use our provided models for homography estimation.
-+ [Google drive](https://drive.google.com/file/d/1y4rBcpRSc6y7J34YAQv32CQgkR2_wCkZ/view?usp=drive_link)
++ [Google drive](https://drive.google.com/drive/folders/1giglxwMGlOb3qE-5AQ60R4495KxRGTqb)
 
-Put the trained model into `saved_ckpt/` folder.
+Put the trained model geoformer.ckpt into `saved_ckpt/` folder.
 
 The model config can be found in [model/geo_config.py](model/geo_config.py)
 
