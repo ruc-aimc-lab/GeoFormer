@@ -23,7 +23,7 @@ pip install -r requirements.txt
 #### For Training
 GeoFormer can be trained on the artificially synthesized dataset OxFord-Paris, as well as on Megadepth dataset with depth labels included. 
 You need to organize the data according to the specified format.
-+ OxFord-Paris, you can directly download the [link]() and extract it to the 'data/' directory;
++ OxFord-Paris, you can directly download the [OxFord 5K](https://www.robots.ox.ac.uk/~vgg/data/oxbuildings/oxbuild_images.tgz) and [Paris 6K](http://www.robots.ox.ac.uk/~vgg/data/parisbuildings/paris_1.tgz) and extract them into one folder and move to the 'data/' directory;
 + Megadepth, you need to follow the process outlined in the [LoFTR](https://github.com/zju3dv/LoFTR/blob/master/docs/TRAINING.md) project  to organize it from scratch.
 The training data should be organized as follows.
 ```
